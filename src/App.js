@@ -1,42 +1,35 @@
-import React from 'react';
-import {
-  ChakraProvider,
-  Box,
-  Text,
-  Link,
-  VStack,
-  Code,
-  Grid,
-  theme,
-} from '@chakra-ui/react';
-import { ColorModeSwitcher } from './ColorModeSwitcher';
-import { Logo } from './Logo';
+import { Center, Flex, Grid, Image, Text } from "@chakra-ui/react";
+import { useState, useEffect } from "react";
+import './App.css'
 
-function App() {
+export default function App() {
+  const [pokemonList, setPokemonList] = useState([]);
+
+  useEffect(() => {
+    fetch("https://pokeapi.co/api/v2/pokemon")
+      .then((response) => response.json())
+      .then((data) => setPokemonList(data.results || []))
+  }, []);
+  console.log(pokemonList);
+
   return (
-    <ChakraProvider theme={theme}>
-      <Box textAlign="center" fontSize="xl">
-        <Grid minH="100vh" p={3}>
-          <ColorModeSwitcher justifySelf="flex-end" />
-          <VStack spacing={8}>
-            <Logo h="40vmin" pointerEvents="none" />
-            <Text>
-              Edit <Code fontSize="xl">src/App.js</Code> and save to reload.
-            </Text>
-            <Link
-              color="teal.500"
-              href="https://chakra-ui.com"
-              fontSize="2xl"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learn Chakra
-            </Link>
-          </VStack>
+    <Flex direction='column' >
+      <Center w='full' bg="#F0F1F6" fontSize='20px' fontWeight='bold' p='20px'>
+        <Text color='#6495ED' pr='5px'>Form</Text>
+        <Text>Fetch Api</Text>
+      </Center>
+      <Center p='20px' w='full' h='full' bg='#FBFBFA'>
+        <Grid templateColumns={{ base: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)', md: 'repeat(4, 1fr)', lg: 'repeat(6, 1fr)' }} gap={10} w='full' >
+          {pokemonList
+            .map((item, i) => (
+              <Flex direction='column' alignItems='center'>
+                <Image src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${i + 1}.png`} />
+                {item.name}
+              </Flex>
+            ))}
         </Grid>
-      </Box>
-    </ChakraProvider>
+      </Center>
+    </Flex>
+
   );
 }
-
-export default App;
